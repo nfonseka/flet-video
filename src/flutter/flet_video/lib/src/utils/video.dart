@@ -119,3 +119,21 @@ VideoControllerConfiguration? controllerConfigurationFromJSON(dynamic json) {
         parseBool(json["enable_hardware_acceleration"], true)!,
   );
 }
+
+Map<String, dynamic>? parseMpvProperties(Control control, String propName) {
+  var v = control.attrString(propName, null);
+  if (v == null) {
+    return null;
+  }
+
+  final j1 = json.decode(v);
+  return mpvPropertiesFromJSON(j1);
+}
+
+Map<String, dynamic>? mpvPropertiesFromJSON(dynamic json) {
+  if (json["mpv_properties"] == null) {
+    return null;
+  }
+  return (json["mpv_properties"] as Map)
+      .map((key, value) => MapEntry(key.toString(), value));
+}

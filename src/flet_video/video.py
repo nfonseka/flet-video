@@ -45,6 +45,12 @@ class VideoConfiguration:
     output_driver: Optional[str] = dataclasses.field(default=None)
     hardware_decoding_api: Optional[str] = dataclasses.field(default=None)
     enable_hardware_acceleration: Optional[bool] = dataclasses.field(default=None)
+    # Extra mpv/libmpv properties (option name -> value) applied to the native
+    # backend. Values are converted to strings before being sent to mpv; bool
+    # values become "yes"/"no". See https://mpv.io/manual/stable/#options
+    mpv_properties: Optional[Dict[str, Union[str, int, float, bool]]] = (
+        dataclasses.field(default=None)
+    )
 
 
 @dataclasses.dataclass

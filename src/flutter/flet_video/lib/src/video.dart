@@ -43,11 +43,29 @@ class _VideoControlState extends State<VideoControl> with FletStoreMixin {
   late final controller =
       VideoController(player, configuration: videoControllerConfiguration);
 
+  Future<void> _applyMpvProperties() async {
+    final mpvProperties = parseMpvProperties(widget.control, "configuration");
+    if (mpvProperties == null) return;
+
+    final platform = player.platform;
+    if (platform is! NativePlayer) return;
+
+    for (final entry in mpvProperties.entries) {
+      final value = entry.value;
+      if (value == null) continue;
+      final valueStr = value is bool ? (value ? "yes" : "no") : value.toString();
+      await platform.setProperty(entry.key, valueStr);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    player.open(Playlist(parseVideoMedia(widget.control, "playlist")),
-        play: widget.control.attrBool("autoPlay", false)!);
+    () async {
+      await _applyMpvProperties();
+      await player.open(Playlist(parseVideoMedia(widget.control, "playlist")),
+          play: widget.control.attrBool("autoPlay", false)!);
+    }();
   }
 
   @override
