@@ -1,6 +1,9 @@
+"""
+Type definitions and configuration objects for flet-video.
+"""
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional
+from typing import Optional, Union
 
 import flet as ft
 
@@ -83,7 +86,30 @@ class VideoConfiguration:
     scale: ft.Number = 1.0
     """
     The scale for the video output.
-    Specifying this option will cause [`width`][..] & [`height`][..] to be ignored.
+    Specifying this option will cause [`width`][(c).] & [`height`][(c).] to be ignored.
+    """
+
+    mpv_properties: Optional[dict[str, Union[str, int, float, bool]]] = None
+    """
+    Extra mpv/libmpv properties to set on
+    native backends (Windows/macOS/Linux/iOS/Android).
+
+    The keys are mpv option/property names without the leading `--`. Values can be
+    `str`, `int`, `float` or `bool`. All values are converted to strings before being
+    passed to mpv; boolean values are converted to `"yes"` / `"no"`.
+
+    Full list of mpv options: https://mpv.io/manual/stable/#options
+
+    Example:
+        ```python
+        >>> VideoConfiguration(
+                mpv_properties={
+                    "profile": "low-latency",   # --profile=low-latency
+                    "untimed": True,            # --untimed
+                    "volume": 80,               # --volume=80
+                }
+            )
+        ```
     """
 
 
@@ -108,16 +134,59 @@ class VideoSubtitleTrack:
     """The language of the subtitle track, e.g. 'en'."""
 
     channels_count: Optional[int] = None
+    """
+    The number of audio channels detected in the media.
+    """
+
     channels: Optional[str] = None
+    """
+    Channel layout string describing the spatial arrangement of channels.
+    """
+
     sample_rate: Optional[int] = None
+    """
+    Audio sampling rate in hertz.
+    """
+
     fps: Optional[ft.Number] = None
+    """
+    Video frames per second.
+    """
+
     bitrate: Optional[int] = None
+    """
+    Overall media bitrate in bits per second.
+    """
+
     rotate: Optional[int] = None
+    """
+    Rotation metadata in degrees to apply when rendering the video.
+    """
+
     par: Optional[ft.Number] = None
+    """
+    Pixel aspect ratio value.
+    """
+
     audio_channels: Optional[int] = None
+    """
+    Explicit audio channel count override.
+    """
+
     album_art: Optional[bool] = None
+    """
+    Whether the track represents album art rather than timed media.
+    """
+
     codec: Optional[str] = None
+    """
+    Codec identifier for the media stream.
+    """
+
     decoder: Optional[str] = None
+    """
+    Decoder name used to process the media stream.
+    """
 
     @classmethod
     def none(cls) -> "VideoSubtitleTrack":
